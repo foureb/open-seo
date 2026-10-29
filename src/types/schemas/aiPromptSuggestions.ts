@@ -6,8 +6,10 @@ export const suggestedAiTopicSchema = z.object({
     .trim()
     .min(1)
     .max(120)
-    .regex(
-      /^\S+(?:\s+\S+){0,4}$/,
+    // A refine, not .regex(): this schema is the model's structured output,
+    // and Anthropic rejects the pattern's range quantifier.
+    .refine(
+      (name) => /^\S+(?:\s+\S+){0,4}$/.test(name),
       "Generated topic names must contain five words or fewer.",
     )
     .describe("A succinct topic name, at most five words"),
